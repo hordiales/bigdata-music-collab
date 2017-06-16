@@ -20,6 +20,6 @@ public class APISettingsActivity extends PreferenceActivity {
     @Override
     public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
-        addPreferencesFromResource(R.xml.preferences);  //TODO: check, method deprecated
+        addPreferencesFromResource(R.xml.preferences);  //FIXME: check, method deprecated
     }
 }
