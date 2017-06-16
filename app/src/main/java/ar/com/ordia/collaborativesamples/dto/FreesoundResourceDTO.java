@@ -97,14 +97,6 @@ public class FreesoundResourceDTO extends SoundResourceDTO {
         this.bitdepth = bitdepth;
     }
 
-    public String getDuration() {
-        return duration;
-    }
-
-    public void setDuration(String duration) {
-        this.duration = duration;
-    }
-
     public String getSamplerate() {
         return samplerate;
     }

@@ -192,7 +192,7 @@ public class APICallActivity extends AppCompatActivity {
             //FIXME use an interface + class implementation
             if ( API.equals("freesound")) {
                 sound = gson.fromJson(respuesta, FreesoundResourceDTO.class);
-                tmpSoundFilename = sound.getName()+"."+((FreesoundResourceDTO)sound).getType();
+                tmpSoundFilename = sound.getName();
             }
             else if ( API.equals("custom")) {
                 sound = gson.fromJson(respuesta, SoundResourceDTO.class);
