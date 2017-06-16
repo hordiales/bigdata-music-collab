@@ -3,8 +3,9 @@ BigData Music Collaboration App for Mobile Devices
 
     Uses MIR descriptors to search sounds around the web.
 
-## Android version (API: )
-
+## Android version
+        minSdkVersion 16
+        targetSdkVersion 25
 
 Supports Freeound.org API and custom werbservice.
 
