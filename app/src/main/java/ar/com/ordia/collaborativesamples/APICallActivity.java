@@ -95,7 +95,7 @@ public class APICallActivity extends AppCompatActivity {
 
     private void configurarAPI() {
         SharedPreferences appPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        API = appPreferences.getString("pref_apiType", null);
+        API = appPreferences.getString("pref_apiType", "");
         Log.d(LOGTAG, "Selected API: "+API );
 
         if( API.equals("freesound") ) {

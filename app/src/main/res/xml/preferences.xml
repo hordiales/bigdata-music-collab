@@ -16,7 +16,8 @@
             android:dependency="pref_apiType"
             android:key="pref_key_freesound_api_key"
             android:summary="@string/pref_key_freesound_api_key_desc"
-            android:title="@string/pref_key_freesound_api_key" />
+            android:title="@string/pref_key_freesound_api_key"
+            android:defaultValue="@string/pref_key_default" />
 
         <EditTextPreference
             android:dependency="pref_apiType"

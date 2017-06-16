@@ -21,9 +21,7 @@ public class FreesoundResourceDTO extends SoundResourceDTO {
     private String filesize;
     private String bitrate;
     private String bitdepth;
-    private String duration; //IMPORTANTE
     private String samplerate;
-    private String username; //IMPORTANTE
     private String pack;
     private String pack_name;
     private String download; //Download link //IMPORTANTE
