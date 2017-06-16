@@ -1,0 +1,22 @@
+{
+	"id": 1194,
+	"url": "http://",
+	"name": "Un archivo",
+	"filename": "1194.wav",
+
+	"description": "bla bla",
+
+	"geotag": "-34.1063159,-59.0768018,13",
+
+	"created": "fecha",
+
+	"license": "CC by",
+
+	"duration": "1.2",
+	"username": "hordia",
+
+	"mir_descriptors": {
+		"lowlevel.dissonance.mean": "0.0933889746666",
+		"lowlevel.mfcc_bands.mean": "0.00223724",
+		"sfx.inharmonicity.mean": "0.100964955986", "rhythm.bpm.mean": "118.377532959", "lowlevel.spectral_contrast.mean": "-0.487052", "lowlevel.spectral_centroid.mean": "5384.64013672", "rhythm.bpm_ticks.mean": "0.545665", "lowlevel.mfcc.mean": "-988.26", "loudness.level.mean": "0.00227916", "metadata.duration.mean": "8.04573059082", "lowlevel.spectral_valleys.mean": "-8.31247", "lowlevel.hfc.mean": "2.54589152336"}
+}

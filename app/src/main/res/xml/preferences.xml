@@ -1,0 +1,34 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:title="@string/pref_api_title"
+        android:key="pref_key_storage_settings">
+
+        <ListPreference
+            android:key="pref_apiType"
+            android:title="@string/pref_apiType"
+            android:dialogTitle="@string/pref_apiType"
+            android:entries="@array/pref_apiType_entries"
+            android:entryValues="@array/pref_apiType_values"
+            android:defaultValue="@string/pref_apiType_default" />
+
+        <!-- TODO: activarlo para el caso de freesound -->
+        <EditTextPreference
+            android:dependency="pref_apiType"
+            android:key="pref_key_freesound_api_key"
+            android:summary="@string/pref_key_freesound_api_key_desc"
+            android:title="@string/pref_key_freesound_api_key" />
+
+        <EditTextPreference
+            android:dependency="pref_apiType"
+            android:key="pref_apiCustomUrl"
+            android:summary="@string/pref_custom_url_desc"
+            android:title="@string/pref_custom_url_key"
+            android:defaultValue="@string/pref_custom_url_default" />
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="notifications_new_project"
+            android:title="@string/pref_title_new_project_notifications" />
+    </PreferenceCategory>
+
+</PreferenceScreen>
