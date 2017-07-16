@@ -53,11 +53,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".APISettingsActivity" />
+        <activity
+            android:name=".APISettingsActivity"
+            android:configChanges="locale"></activity>
         <activity
             android:name=".MIRStateActivity"
             android:label="@string/title_activity_mirstate"
             android:theme="@style/AppTheme.NoActionBar"></activity>
+
+        <service
+            android:name=".MyFirebaseInstanceIDService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>

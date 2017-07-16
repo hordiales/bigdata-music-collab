@@ -7,6 +7,9 @@ import android.widget.Button;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 
+/*
+  En esta activity ...
+*/
 public class MainActivity extends AppCompatActivity {
 
     private Button buttonRecuperarPushToken;

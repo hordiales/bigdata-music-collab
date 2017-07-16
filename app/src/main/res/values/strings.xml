@@ -1,8 +1,13 @@
 <resources>
-    <string name="app_name">CollaborativeSamples</string>
+    <string name="app_name">Collaborative Web Music</string>
+
     <string name="search_txt">Search</string>
     <string name="download">Download</string>
+    <string name="download_sound">Download sound</string>
+    <string name="not_found">Not Found</string>
+
     <string name="title_activity_settings">Settings</string>
+
 
     <!-- Strings related to Settings -->
 
@@ -10,13 +15,14 @@
     <string name="pref_header_general">General</string>
 
     <!-- Example settings for Preferences -->
-    <string name="pref_api_title">Configuración de API</string>
-    <string name="pref_key_freesound_api_key_desc">Entrar a la página http://freesound.org/api, registrarse y solicitar</string>
+    <string name="pref_api_title">API Config</string>
+    <string name="pref_key_freesound_api_key_desc">Enter to http://freesound.org/api register and ask for the APIKEY</string>
     <string name="pref_key_freesound_api_key">Freesound API KEY</string>
-    <string name="pref_apiType">Configurar web de consulta</string>
+    <string name="pref_apiType">Source API Web</string>
     <string name="pref_apiType_default">custom</string>
-    <string name="action_config">Configurar</string>
-    <string name="pref_title_new_project_notifications">Notificar si se crea un nuevo proyecto</string>
+    <string name="action_config">Configure</string>
+    <string name="pref_title_new_project_notifications">Notification</string>
+    <string name="pref_summary_new_project_notifications">Notify if a new project was created</string>
     <string-array name="pref_apiType_entries">
         <item>Freesound</item>
         <item>RedPanal</item>
@@ -29,8 +35,12 @@
         <item>custom</item>
     </string-array>
     <string name="title_activity_mirstate">MIRStateActivity</string>
-    <string name="pref_custom_url_desc">URL de servicio propio</string>
+    <string name="pref_custom_url_desc">URL of custom service</string>
     <string name="pref_custom_url_key">URL Custom</string>
     <string name="pref_custom_url_default">http://localhost:5000</string>
+
     <string name="pref_key_default"></string>
+    <string name="not_yet_available">Service not yet available</string>
+    <string name="add">Add</string>
+
 </resources>

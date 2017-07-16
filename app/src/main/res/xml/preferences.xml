@@ -11,25 +11,28 @@
             android:entryValues="@array/pref_apiType_values"
             android:defaultValue="@string/pref_apiType_default" />
 
-        <!-- TODO: activarlo para el caso de freesound -->
         <EditTextPreference
+            android:defaultValue="@string/pref_key_default"
             android:dependency="pref_apiType"
             android:key="pref_key_freesound_api_key"
-            android:summary="@string/pref_key_freesound_api_key_desc"
             android:title="@string/pref_key_freesound_api_key"
-            android:defaultValue="@string/pref_key_default" />
+            android:summary="@string/pref_key_freesound_api_key_desc"
+            android:enabled="false"/>
 
         <EditTextPreference
+            android:defaultValue="@string/pref_custom_url_default"
             android:dependency="pref_apiType"
-            android:key="pref_apiCustomUrl"
-            android:summary="@string/pref_custom_url_desc"
+            android:enabled="false"
+            android:key="pref_api_custom_url"
             android:title="@string/pref_custom_url_key"
-            android:defaultValue="@string/pref_custom_url_default" />
+            android:summary="@string/pref_custom_url_desc" />
 
         <SwitchPreference
+            android:autoText="true"
             android:defaultValue="true"
             android:key="notifications_new_project"
-            android:title="@string/pref_title_new_project_notifications" />
+            android:title="@string/pref_title_new_project_notifications"
+            android:summary="@string/pref_summary_new_project_notifications"/>
     </PreferenceCategory>
 
 </PreferenceScreen>

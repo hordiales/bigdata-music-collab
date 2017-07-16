@@ -1,0 +1,32 @@
+<resources>
+    <string name="app_name">Música Web Colaborativa</string>
+
+    <string name="search_txt">Buscar</string>
+    <string name="download">Bajar</string>
+    <string name="download_sound">Bajar sonido</string>
+    <string name="not_found">No encontrado</string>
+
+    <string name="title_activity_settings">Configuración</string>
+
+    <!-- Strings related to Settings -->
+
+    <!-- Example General settings -->
+    <string name="pref_header_general">General</string>
+
+    <!-- Example settings for Preferences -->
+    <string name="pref_api_title">Configuración de API</string>
+    <string name="pref_key_freesound_api_key_desc">Entrar a la página http://freesound.org/api registrarse y solicitar APIKEY</string>
+    <string name="pref_key_freesound_api_key">Freesound API KEY</string>
+    <string name="pref_apiType">Configurar web de consulta</string>
+    <string name="action_config">Configurar</string>
+    <string name="pref_title_new_project_notifications">Notificación</string>
+
+    <string name="title_activity_mirstate">ActividadEstadoMIR</string>
+    <string name="pref_custom_url_desc">URL de servicio propio</string>
+    <string name="pref_custom_url_key">URL Propia</string>
+    <string name="not_yet_available">Servicio aún no disponible</string>
+    <string name="pref_summary_new_project_notifications">Notificar si se crea un nuevo proyecto</string>
+    <string name="add">Agregar</string>
+
+
+</resources>

@@ -29,6 +29,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Locale;
 
 import ar.com.ordia.collaborativesamples.dto.SoundResourceDTO;
 import okhttp3.OkHttpClient;
@@ -39,6 +40,9 @@ import ar.com.ordia.collaborativesamples.dto.FreesoundResourceDTO;
 
 /*
 APICall HOME
+
+En esta activity se recuperan los json con descriptores de los sonidos
+
  */
 public class APICallActivity extends AppCompatActivity {
 
@@ -85,16 +89,19 @@ public class APICallActivity extends AppCompatActivity {
 
         //download progress file
         mProgressDialog = new ProgressDialog(APICallActivity.this);
-        mProgressDialog.setMessage("Bajar sonido"); //FIXME: internacionalizar txt
+        mProgressDialog.setMessage( getString(R.string.download_sound) );
         mProgressDialog.setIndeterminate(true);
         mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         mProgressDialog.setCancelable(true);
+
+        String locale = getResources().getConfiguration().locale.getDisplayName();
 
         configurarAPI();
     }
 
     private void configurarAPI() {
         SharedPreferences appPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
         API = appPreferences.getString("pref_apiType", "");
         Log.d(LOGTAG, "Selected API: "+API );
 
@@ -112,6 +119,7 @@ public class APICallActivity extends AppCompatActivity {
             URL_SOUND_RESOURCE = null;
             URL_SOUND_DOWNLOAD_PRE = URL_SOUND_RESOURCE;
             URL_SOUND_DOWNLOAD_POST = null;
+            Log.d(LOGTAG, "RedPanal SoundResource: " + getString(R.string.not_yet_available));
         }
         else if( API.equals("custom") ) {
             API_KEY = null;
@@ -126,14 +134,26 @@ public class APICallActivity extends AppCompatActivity {
     private void consultaSonido() {
         String soundId = editTextID.getText().toString();
         configurarAPI();
-        //TODO: add try/catch en freesound si esta mal la api estalla
-        new consultaPorIdHandler().execute(URL_SOUND_RESOURCE+soundId);
+        if( URL_SOUND_RESOURCE==null ) {
+            Toast.makeText(this, getString(R.string.not_yet_available), Toast.LENGTH_SHORT).show();
+            return;
+        }
+        try {
+            new consultaPorIdHandler().execute(URL_SOUND_RESOURCE + soundId);
+        } catch (Exception e) {
+            Log.e(LOGTAG, "error", e);
+        }
     }
 
     private void bajarSonido() {
         String soundId = editTextID.getText().toString();
         //TODO: solicitar al usuario que otorgue permisos de escritura en el filesystem externo?
         configurarAPI();
+
+        if( URL_SOUND_RESOURCE==null ) {
+            Toast.makeText(this, getString(R.string.not_yet_available), Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         final DownloadTask downloadTask = new DownloadTask(APICallActivity.this, tmpSoundFilename);
         downloadTask.execute(URL_SOUND_DOWNLOAD_PRE+soundId+URL_SOUND_DOWNLOAD_POST);
@@ -168,12 +188,21 @@ public class APICallActivity extends AppCompatActivity {
 
             try {
                 Response response = client.newCall(request).execute();
-                String contenidoRespuesta = response.body().string();
 
-                //TODO: chequear el json que llega, puede ser de error
-                //  {"detail":"Authentication credentials were not provided."}
-                Log.d(LOGTAG, "JSON: "+contenidoRespuesta);
-                return contenidoRespuesta;
+                if (response.code() == HttpURLConnection.HTTP_OK) { //code 200
+                    String contenidoRespuesta = response.body().string();
+
+                    //TODO: chequear el json que llega, puede ser de error
+                    //  {"detail":"Authentication credentials were not provided."}
+                    Log.d(LOGTAG, "JSON: " + contenidoRespuesta);
+                    return contenidoRespuesta;
+                } else if (response.code() == HttpURLConnection.HTTP_NOT_FOUND) { //code 400
+                    return "NULL";
+                } else {
+                    throw new Exception("Error with api connection. Code: " + response.code());
+                }
+            } catch (java.net.ConnectException e) {
+                Log.e(LOGTAG, "error de conexión", e);
             } catch (Exception e) {
                 Log.e(LOGTAG, "error", e);
             }
@@ -184,6 +213,16 @@ public class APICallActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String respuesta) {
             super.onPostExecute(respuesta);
+
+            if (respuesta==null) {
+                return;
+            }
+
+            if( respuesta.equals("NULL") ) {
+                respuesta = getString(R.string.not_found);
+                textViewRespuesta.setText( respuesta );
+                return;
+            }
 
             Gson gson = new Gson();
 
@@ -209,7 +248,6 @@ public class APICallActivity extends AppCompatActivity {
                 + sound.getLicense() + "\n";
 
             textViewRespuesta.setText(jsonSound);
-
         }
 
     }
