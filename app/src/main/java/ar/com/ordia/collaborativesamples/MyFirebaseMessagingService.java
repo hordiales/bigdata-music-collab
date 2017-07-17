@@ -10,6 +10,16 @@ import com.google.firebase.iid.FirebaseInstanceIdService;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+/*
+Firebase Messaging Service
+
+Cuando el mensaje va dirigido a la aplicación que está en primer plano deberá ser la propia
+aplicación la que se encargue de realizar la gestión completa de dicho mensaje
+
+correr servicio android que va a correr en background, para hacer algo con ese mensaje
+hacer un servicio es mucho más complicado, pero con esto es más simple (tiene que ser no bloqueante,
+correr en thread separado, no pullear tan seguido porquee te quedas sin bateria)
+ */
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private static final String LOGTAG = "android-fcm";

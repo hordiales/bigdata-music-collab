@@ -9,7 +9,9 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 
 /*
-Actualización de token
+Servicio Firebase: Actualización de token
+
+WARNING: el tag puede cambiar
 
 "El token de registro se asigna a nuestra aplicación en el momento de su primera conexión con los
  servicios de mensajería, y en condiciones normales se mantiene invariable en el tiempo.
@@ -29,6 +31,8 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
         //Se obtiene el token actualizado
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
 
-        Log.d(LOGTAG, "Token actualizado: " + refreshedToken);
+        //Por motivos didácticos, en mi caso de ejemplo muestro el token recibido en un mensaje de
+        // log, pero por supuesto esto no es necesario ni recomendable
+        //Log.d(LOGTAG, "Token actualizado: " + refreshedToken);
     }
 }

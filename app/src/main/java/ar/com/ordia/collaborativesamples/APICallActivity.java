@@ -380,13 +380,18 @@ public class APICallActivity extends AppCompatActivity {
                 configurarApp();
                 return true;
             case R.id.action_search:
-                //borrarContacto();
+                searchView();
                 return true;
             //case R.id.action_listar:
                 //listarContactos();
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    public void searchView() {
+        Intent intentPreferences = new Intent(this, MainActivity.class);
+        startActivity(intentPreferences);
     }
 
     public void configurarApp() {
