@@ -21,6 +21,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.Auth;
 import com.google.gson.Gson;
 
 import java.io.FileOutputStream;
@@ -380,19 +381,29 @@ public class APICallActivity extends AppCompatActivity {
                 configurarApp();
                 return true;
             case R.id.action_search:
-                searchView();
+                //searchView(); //this activity!
                 return true;
             //case R.id.action_listar:
                 //listarContactos();
+            /* Login out only from MainActivity?
+            case R.id.sign_out_menu:
+                startActivity(new Intent(this, MainActivity.class));
+
+                mFirebaseAuth.signOut();
+                Auth.GoogleSignInApi.signOut(mGoogleApiClient);
+                mUsername = ANONYMOUS;
+                startActivity(new Intent(this, SignInActivity.class));
+                return true;*/
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
+    /*
     public void searchView() {
-        Intent intentPreferences = new Intent(this, MainActivity.class);
+        Intent intentPreferences = new Intent(this, .class);
         startActivity(intentPreferences);
-    }
+    }*/
 
     public void configurarApp() {
         //Intent intentPreferences = new Intent(this, AppCompatPreferenceActivity.class);
