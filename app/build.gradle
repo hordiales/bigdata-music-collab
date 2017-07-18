@@ -39,6 +39,8 @@ dependencies {
     // Google
     compile 'com.google.android.gms:play-services-auth:10.2.0'
 
+    compile 'com.google.android.gms:play-services-maps:10.2.0'
+
     // Firebase
     //compile 'com.google.firebase:firebase-messaging:9.2.0' // previous example version?
     compile 'com.google.firebase:firebase-messaging:10.2.0' // tutorial version

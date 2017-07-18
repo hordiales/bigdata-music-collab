@@ -52,6 +52,8 @@ public class APICallActivity extends AppCompatActivity {
     private TextView textViewRespuesta;
     private Button buttonLlamarHttp;
     private Button buttonBajarSonido;
+    private Button buttonAddSound;
+
     private EditText editTextID;
 
     private String tmpSoundFilename = null; //filename or file extension (to download)
@@ -64,6 +66,8 @@ public class APICallActivity extends AppCompatActivity {
     private String URL_SOUND_DOWNLOAD_POST = null;
 
     ProgressDialog mProgressDialog; //download file progress
+
+    SoundResourceDTO currentSound = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +92,16 @@ public class APICallActivity extends AppCompatActivity {
             }
         });
 
+        buttonAddSound = (Button) findViewById(R.id.buttonAdd);
+        buttonAddSound.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(LOGTAG, "Add sound to the project ID: "); //TODO: complete with id number and API source
+                addSound(); //TODO:implement and save in firebase DB
+
+            }
+        });
+
         //download progress file
         mProgressDialog = new ProgressDialog(APICallActivity.this);
         mProgressDialog.setMessage( getString(R.string.download_sound) );
@@ -98,6 +112,28 @@ public class APICallActivity extends AppCompatActivity {
         String locale = getResources().getConfiguration().locale.getDisplayName();
 
         configurarAPI();
+    }
+
+    private void addSound() {
+        Intent intentMaps = new Intent(this, MapsActivity.class);
+        //double longitude = -33.1677208;
+        //double latitude = -65.0027991;
+
+        //String geotag = currentSound.getGeotag();
+        //-33.1677208,-65.0027991 (Achiras)
+        if (currentSound==null) {
+            Log.d(LOGTAG, "There is no sound selected to get geotag position");
+            return;
+        }
+        String[] geotag = currentSound.getGeotag().split(",");
+        double longitude = Double.parseDouble( geotag[0] );
+        double latitude = Double.parseDouble( geotag[1] );
+
+        String title = "Web sound name or title";
+        intentMaps.putExtra("longitude", longitude);
+        intentMaps.putExtra("latitude", latitude);
+        intentMaps.putExtra("title", title);
+        startActivity(intentMaps);
     }
 
     private void configurarAPI() {
@@ -249,6 +285,7 @@ public class APICallActivity extends AppCompatActivity {
                 + sound.getLicense() + "\n";
 
             textViewRespuesta.setText(jsonSound);
+            currentSound = sound;
         }
 
     }
