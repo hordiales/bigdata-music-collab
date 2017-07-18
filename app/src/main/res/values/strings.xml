@@ -42,7 +42,7 @@
     <string name="pref_key_default"></string>
     <string name="not_yet_available">Service not yet available</string>
     <string name="add">Add</string>
-    <string name="title_activity_sign_in">Sign in</string>
+    <string name="title_activity_sign_in">Sign to Collaborative Web Music</string>
 
     <!-- Strings related to login -->
     <string name="action_sign_in">Sign in or register</string>
@@ -55,5 +55,10 @@
     <string name="sign_out">Sign Out</string>
     <string name="welcome_message">Welcome to the app</string>
     <string name="start">Start</string>
+    <string name="id">ID</string>
+    <string name="inharmonicity">Inharmonicity</string>
+    <string name="spectral_centroid">SpectralCentroid</string>
+    <string name="bpm">BPM</string>
+    <string name="duration">Duration</string>
 
 </resources>

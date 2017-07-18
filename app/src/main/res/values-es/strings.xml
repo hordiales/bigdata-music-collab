@@ -28,16 +28,21 @@
     <string name="pref_summary_new_project_notifications">Notificar si se crea un nuevo proyecto</string>
     <string name="add">Agregar</string>
     <string name="action_sign_in">Loguearse registrarse</string>
-    <string name="action_sign_in_short">Loguearse</string>
+    <string name="action_sign_in_short">Registrarse</string>
     <string name="error_field_required">Este campo es requerido</string>
     <string name="error_incorrect_password">La contraseña es inválida</string>
     <string name="error_invalid_email">Este correo es inválido</string>
     <string name="error_invalid_password">La contraseña es muy corta</string>
     <string name="welcome_message">Bienvenido a la aplicación MúsicaWebColaborativa con la que podrá crear proyectos de canciones, consultar bases de datos sonoras y compartir los proyectos con otros usuarios</string>
-    <string name="sign_in">Loguearse</string>
-    <string name="sign_out">Desloguearse</string>
+    <string name="sign_in">Registrarse</string>
+    <string name="sign_out">Salir</string>
     <string name="start">Empezar</string>
-    <string name="title_activity_sign_in">Loguearse</string>
+    <string name="id">ID</string>
+    <string name="bpm">BPM</string>
+    <string name="duration">Duración</string>
+    <string name="inharmonicity">Inharmonicidad</string>
+    <string name="spectral_centroid">CentroideEspectral</string>
+    <string name="title_activity_sign_in">Música Web Colaborativa</string>
 
 
 </resources>

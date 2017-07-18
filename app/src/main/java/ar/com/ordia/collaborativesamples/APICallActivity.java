@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,6 +54,12 @@ public class APICallActivity extends AppCompatActivity {
     private Button buttonLlamarHttp;
     private Button buttonBajarSonido;
     private Button buttonAddSound;
+
+    private SeekBar valueBPM;
+    private SeekBar valueDuration;
+    private SeekBar valueSpectralCentroid;
+    private SeekBar valueInharmonicity;
+
 
     private EditText editTextID;
 
@@ -102,7 +109,12 @@ public class APICallActivity extends AppCompatActivity {
             }
         });
 
-        //download progress file
+        valueBPM              = (SeekBar) findViewById(R.id.seekBarTempo);
+        valueDuration         = (SeekBar) findViewById(R.id.seekBarDuration);
+        valueSpectralCentroid = (SeekBar) findViewById(R.id.seekBarSpectralCentroid);
+        valueInharmonicity    = (SeekBar) findViewById(R.id.seekBarInharmonicity);
+
+        //Download progress file
         mProgressDialog = new ProgressDialog(APICallActivity.this);
         mProgressDialog.setMessage( getString(R.string.download_sound) );
         mProgressDialog.setIndeterminate(true);
@@ -116,13 +128,10 @@ public class APICallActivity extends AppCompatActivity {
 
     private void addSound() {
         Intent intentMaps = new Intent(this, MapsActivity.class);
-        //double longitude = -33.1677208;
-        //double latitude = -65.0027991;
 
-        //String geotag = currentSound.getGeotag();
-        //-33.1677208,-65.0027991 (Achiras)
         if (currentSound==null) {
             Log.d(LOGTAG, "There is no sound selected to get geotag position");
+            Toast.makeText(this, getString(R.string.not_yet_available), Toast.LENGTH_SHORT).show();
             return;
         }
         String[] geotag = currentSound.getGeotag().split(",");
@@ -149,6 +158,9 @@ public class APICallActivity extends AppCompatActivity {
             //FIXME: no funciona la auth en freesound (VER) necesita oauth2?
 
             API_KEY = appPreferences.getString("pref_key_freesound_api_key", null);
+            if( API_KEY==null ){
+                API_KEY = getString(R.string.freesound_api_key); //default by config
+            }
         }
         else if( API.equals("redpanal") ) {
             //TODO: implement
