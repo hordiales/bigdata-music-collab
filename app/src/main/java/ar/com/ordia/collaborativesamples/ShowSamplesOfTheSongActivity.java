@@ -48,15 +48,14 @@ public class ShowSamplesOfTheSongActivity extends AppCompatActivity {
         //arrayAdapter.notifyDataSetChanged();
 
         samplesRef.child("canción1")
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    //List<SoundResourceDTO> samples = new ArrayList<SoundResourceDTO>();
+                .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
+                        samplesList.clear();
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                             SoundResourceDTO sample = snapshot.getValue(SoundResourceDTO.class);
                             Log.d(LOGTAG, String.valueOf(sample.getId())+": "+sample.getName() );
                             samplesList.add(sample);
-                            Log.d(LOGTAG, "List size: "+ samplesList.size());
                         }
                         arrayAdapter.notifyDataSetChanged();
                     }
