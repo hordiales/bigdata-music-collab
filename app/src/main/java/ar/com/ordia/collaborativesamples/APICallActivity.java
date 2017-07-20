@@ -11,6 +11,7 @@ import android.os.PowerManager;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,12 +19,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.auth.api.Auth;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -31,11 +36,14 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Locale;
+import java.util.HashMap;
+import java.util.Map;
 
 import ar.com.ordia.collaborativesamples.dto.SoundResourceDTO;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import ar.com.ordia.collaborativesamples.dto.FreesoundResourceDTO;
@@ -104,8 +112,7 @@ public class APICallActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Log.d(LOGTAG, "Add sound to the project ID: "); //TODO: complete with id number and API source
-                addSound(); //TODO:implement and save in firebase DB
-
+                agregarSonido();
             }
         });
 
@@ -123,29 +130,95 @@ public class APICallActivity extends AppCompatActivity {
 
         String locale = getResources().getConfiguration().locale.getDisplayName();
 
-        configurarAPI();
+        configurarAPIDownload();
+
+        // New child entries
+        //mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
+        /*
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference ref = database.getReference("server/saving-data/fireblog");
+        */
     }
 
-    private void addSound() {
-        Intent intentMaps = new Intent(this, MapsActivity.class);
+    // Firebase instance variables
+    //private DatabaseReference mFirebaseDatabaseReference;
+    private static final String SONGS_CHILD = "songs";
+    private static final String SERVER_PATH = "server/";
+    final FirebaseDatabase database = FirebaseDatabase.getInstance();
 
+    private void agregarSonido() {
         if (currentSound==null) {
-            Log.d(LOGTAG, "There is no sound selected to get geotag position");
+            Log.d(LOGTAG, "There is no sound selected to add");
             Toast.makeText(this, getString(R.string.not_yet_available), Toast.LENGTH_SHORT).show();
             return;
         }
-        String[] geotag = currentSound.getGeotag().split(",");
-        double longitude = Double.parseDouble( geotag[0] );
-        double latitude = Double.parseDouble( geotag[1] );
 
-        String title = "Web sound name or title";
-        intentMaps.putExtra("longitude", longitude);
-        intentMaps.putExtra("latitude", latitude);
-        intentMaps.putExtra("title", title);
-        startActivity(intentMaps);
+        DatabaseReference ref = database.getReference(SERVER_PATH);
+
+        DatabaseReference songsRef = ref.child(SONGS_CHILD + "/canción1");
+
+        songsRef.child(String.valueOf(currentSound.getId())).setValue(currentSound);
+
+        textViewRespuesta.setText(getString(R.string.added_to_db));
     }
 
-    private void configurarAPI() {
+    private void showSoundLocation() {
+        //Search geotag info
+        String soundId = editTextID.getText().toString();
+
+        configurarAPIporID();
+        if( URL_SOUND_RESOURCE==null ) {
+            Toast.makeText(this, getString(R.string.not_yet_available), Toast.LENGTH_SHORT).show();
+            return;
+        }
+        try {
+            new consultaPorIdHandler().execute(URL_SOUND_RESOURCE+soundId); //WARNING: en el postExecute llama a startMapActivity
+        } catch (Exception e) {
+            Log.e(LOGTAG, "error", e);
+        }
+    }
+
+    private void configurarAPISearch() {
+
+        SharedPreferences appPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        //PreferenceManager.getDefaultSharedPreferencesName(this);
+
+        API = appPreferences.getString("pref_apiType", "");
+        Log.d(LOGTAG, "Selected API: "+API );
+
+        //temporally solution custom api searchs over freesound DB and returns search ID
+        if( API.equals("freesound") || API.equals("custom") ) {
+            /*
+            URL_SOUND_RESOURCE = "http://www.freesound.org/apiv2/";
+            URL_SOUND_DOWNLOAD_PRE = URL_SOUND_RESOURCE;
+            URL_SOUND_DOWNLOAD_POST = "/";
+            //FIXME: no funciona la auth en freesound (VER) necesita oauth2?
+            */
+
+            API_KEY = appPreferences.getString("pref_key_freesound_api_key", null);
+            if( API_KEY==null || API_KEY.equals("") ){
+                API_KEY = getString(R.string.freesound_api_key); //default by config
+            }
+
+            URL_SOUND_RESOURCE = appPreferences.getString("pref_apiCustomUrl", null)+"/search";
+            //URL_SOUND_RESOURCE = "http://5.0.0.100:5000"+"/search";
+
+            URL_SOUND_DOWNLOAD_PRE = URL_SOUND_RESOURCE;
+            URL_SOUND_DOWNLOAD_POST = "";
+        }
+        else if ( API.equals("redpanal") ) {
+            //TODO: implement
+            API_KEY = null;
+            URL_SOUND_RESOURCE = null;
+            URL_SOUND_DOWNLOAD_PRE = URL_SOUND_RESOURCE;
+            URL_SOUND_DOWNLOAD_POST = null;
+            Log.d(LOGTAG, "RedPanal SoundResource: " + getString(R.string.not_yet_available));
+        }
+        Log.d(LOGTAG, "URL_SOUND_RESOURCE: " +  URL_SOUND_RESOURCE);
+        Log.d(LOGTAG, "API_KEY: " + API_KEY);
+    }
+
+    private void configurarAPIDownload() {
         SharedPreferences appPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         API = appPreferences.getString("pref_apiType", "");
@@ -158,7 +231,7 @@ public class APICallActivity extends AppCompatActivity {
             //FIXME: no funciona la auth en freesound (VER) necesita oauth2?
 
             API_KEY = appPreferences.getString("pref_key_freesound_api_key", null);
-            if( API_KEY==null ){
+            if( API_KEY==null || API_KEY.equals("") ) {
                 API_KEY = getString(R.string.freesound_api_key); //default by config
             }
         }
@@ -171,8 +244,9 @@ public class APICallActivity extends AppCompatActivity {
             Log.d(LOGTAG, "RedPanal SoundResource: " + getString(R.string.not_yet_available));
         }
         else if( API.equals("custom") ) {
-            API_KEY = null;
+            //API_KEY = null; //lets use same freesound api-key
             URL_SOUND_RESOURCE = appPreferences.getString("pref_apiCustomUrl", null)+"/sounds/";
+            //URL_SOUND_RESOURCE = "http://5.0.0.100:5000"+"/sounds/";
             URL_SOUND_DOWNLOAD_PRE = URL_SOUND_RESOURCE;
             URL_SOUND_DOWNLOAD_POST = "/audio";
         }
@@ -180,15 +254,92 @@ public class APICallActivity extends AppCompatActivity {
         Log.d(LOGTAG, "API_KEY: " + API_KEY);
     }
 
+    private void configurarAPIporID() {
+        SharedPreferences appPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        API = appPreferences.getString("pref_apiType", "");
+        Log.d(LOGTAG, "Selected API: "+API );
+
+        if( API.equals("freesound") ) {
+            URL_SOUND_RESOURCE = "http://www.freesound.org/apiv2/sounds/";
+            URL_SOUND_DOWNLOAD_PRE = URL_SOUND_RESOURCE;
+            URL_SOUND_DOWNLOAD_POST = "";
+            //FIXME: no funciona la auth en freesound (VER) necesita oauth2?
+
+            API_KEY = appPreferences.getString("pref_key_freesound_api_key", null);
+            if( API_KEY==null || API_KEY.equals("") ) {
+                API_KEY = getString(R.string.freesound_api_key); //default by config
+            }
+        }
+        else if( API.equals("redpanal") ) {
+            //TODO: implement
+            API_KEY = null;
+            URL_SOUND_RESOURCE = null;
+            URL_SOUND_DOWNLOAD_PRE = URL_SOUND_RESOURCE;
+            URL_SOUND_DOWNLOAD_POST = null;
+            Log.d(LOGTAG, "RedPanal SoundResource: " + getString(R.string.not_yet_available));
+        }
+        else if( API.equals("custom") ) {
+            //API_KEY = null; //lets use same freesound api-key
+            URL_SOUND_RESOURCE = appPreferences.getString("pref_apiCustomUrl", null)+"/sounds/";
+            //URL_SOUND_RESOURCE = "http://5.0.0.100:5000"+"/sounds/";
+            URL_SOUND_DOWNLOAD_PRE = URL_SOUND_RESOURCE;
+            URL_SOUND_DOWNLOAD_POST = "";
+        }
+        Log.d(LOGTAG, "URL_SOUND_RESOURCE: " +  URL_SOUND_RESOURCE);
+        Log.d(LOGTAG, "API_KEY: " + API_KEY);
+    }
+
+    private void startMapActivity() {
+        //Start map activity
+        Intent intentMaps = new Intent(this, MapsActivity.class);
+
+        if (currentSound==null) {
+            Log.d(LOGTAG, "There is no sound selected to get geotag position");
+            Toast.makeText(this, getString(R.string.not_yet_available), Toast.LENGTH_SHORT).show();
+            return;
+        }
+        String geodesc = currentSound.getGeotag();
+        if (geodesc==null) {
+            Log.d(LOGTAG, "There is no sound selected to get geotag position");
+            Toast.makeText(this, getString(R.string.not_yet_available), Toast.LENGTH_SHORT).show();
+            return;
+        }
+        String[] geotag = geodesc.split(",");
+        double longitude = Double.parseDouble( geotag[0] );
+        double latitude = Double.parseDouble( geotag[1] );
+
+        String title = "Web sound name or title";
+        intentMaps.putExtra("longitude", longitude);
+        intentMaps.putExtra("latitude", latitude);
+        intentMaps.putExtra("title", title);
+        startActivity(intentMaps);
+    }
+
     private void consultaSonido() {
-        String soundId = editTextID.getText().toString();
-        configurarAPI();
-        if( URL_SOUND_RESOURCE==null ) {
+        float bpm = valueBPM.getProgress();
+        float duration = valueDuration.getProgress();
+        float spectral_centroid = valueSpectralCentroid.getProgress();
+        float inharmonicity = valueInharmonicity.getProgress();
+
+        Log.d(LOGTAG, "BPM: " + bpm + ", Duration: " + duration);
+        Log.d(LOGTAG, "SpectralCentroid: " + spectral_centroid + ", Inharmonicity: " + inharmonicity);
+
+        configurarAPISearch();
+
+        if (URL_SOUND_RESOURCE == null) {
             Toast.makeText(this, getString(R.string.not_yet_available), Toast.LENGTH_SHORT).show();
             return;
         }
         try {
-            new consultaPorIdHandler().execute(URL_SOUND_RESOURCE + soundId);
+            String[] search_params = new String[5];
+            search_params[0] = URL_SOUND_RESOURCE;
+            search_params[1] = Float.toString(bpm);
+            search_params[2] = Float.toString(duration);
+            search_params[3] = Float.toString(spectral_centroid);
+            search_params[4] = Float.toString(inharmonicity);
+
+            new consultaPorJsonHandler().execute(search_params);
         } catch (Exception e) {
             Log.e(LOGTAG, "error", e);
         }
@@ -196,12 +347,19 @@ public class APICallActivity extends AppCompatActivity {
 
     private void bajarSonido() {
         String soundId = editTextID.getText().toString();
-        //TODO: solicitar al usuario que otorgue permisos de escritura en el filesystem externo?
-        configurarAPI();
+
+        //WARNING TODO: solicitar al usuario que otorgue permisos de escritura en el filesystem externo
+        // ( Como esta ahora hay que hacerlo manualmente )
+
+        configurarAPIDownload();
 
         if( URL_SOUND_RESOURCE==null ) {
             Toast.makeText(this, getString(R.string.not_yet_available), Toast.LENGTH_SHORT).show();
             return;
+        }
+
+        if (tmpSoundFilename==null) {
+            tmpSoundFilename = soundId + ".wav";
         }
 
         final DownloadTask downloadTask = new DownloadTask(APICallActivity.this, tmpSoundFilename);
@@ -290,13 +448,119 @@ public class APICallActivity extends AppCompatActivity {
                 throw new RuntimeException("Not yet implemented");
             }
 
+            /*
             String jsonSound = ""
-                + sound.getId() + "\n"
-                + sound.getName() + "\n\n"
-                + sound.getDescription() + "\n\n"
-                + sound.getLicense() + "\n";
+                //+ sound.getId() + "\n"
+                + getString(R.string.desc_name)+": " + sound.getName() + "\n\n"
+                //+ getString(R.string.filename)+ sound.getId() + ".wav\n\n"
+                + getString(R.string.description)+": "+sound.getDescription() + "\n\n"
+                + getString(R.string.license)+": "+sound.getLicense() + "\n";
+            */
+            //textViewRespuesta.setText(jsonSound);
+            currentSound = sound;
+
+            startMapActivity();
+        }
+
+    }
+
+    /*
+        This is because get() method of AsyncTask waits for the computation to finish in
+        doInBackground method and then retrieves its result. See this link.
+        This will make your main UIThread in wait mode until doInBackground finish its execution or
+        here is some exception occur(i.e. CancellationException,ExecutionException and InterruptedException).
+
+        You should use onPostExecute(Result) override method of AsyncTask.
+    */
+    private class consultaPorJsonHandler extends AsyncTask<String, Void, String> {
+        OkHttpClient client = new OkHttpClient();
+
+        //se va a hacer en un thread aparte para que no bloquee la interfaz gráfica
+        @Override
+        protected String doInBackground(String... params) {
+
+            JsonObject json_descriptors = new JsonObject();
+            json_descriptors.addProperty("BPM", params[1]);
+            json_descriptors.addProperty("duration", params[2]);
+            json_descriptors.addProperty("spectral_centroid", params[3]);
+            json_descriptors.addProperty("inharmonicity", params[4]);
+
+            Request request = new Request.Builder()
+                    .header("Authorization", "Token " + API_KEY) //FIXME no hace falta en las api's que no sean freesound
+                    .url(params[0])
+                    .post(
+                            RequestBody
+                                    .create(MediaType
+                                            .parse("application/json"),
+                                            json_descriptors.toString()
+                                    )
+                    )
+                    .build();
+
+            try {
+                Response response = client.newCall(request).execute();
+
+                if (response.code() == HttpURLConnection.HTTP_OK) { //code 200
+                    String contenidoRespuesta = response.body().string();
+
+                    //TODO: chequear el json que llega, puede ser de error
+                    //  {"detail":"Authentication credentials were not provided."}
+                    Log.d(LOGTAG, "JSON: " + contenidoRespuesta);
+                    return contenidoRespuesta;
+                } else if (response.code() == HttpURLConnection.HTTP_NOT_FOUND) { //code 400
+                    return "NULL";
+                } else {
+                    throw new Exception("Error with api connection. Code: " + response.code());
+                }
+            } catch (java.net.ConnectException e) {
+                Log.e(LOGTAG, "error de conexión", e);
+            } catch (Exception e) {
+                Log.e(LOGTAG, "error", e);
+            }
+            return null;
+        }
+
+        //cuando esta la respuesta se la envia a la interfaz
+        @Override
+        protected void onPostExecute(String respuesta) {
+            super.onPostExecute(respuesta);
+
+            if (respuesta==null) {
+                return;
+            }
+
+            if( respuesta.equals("NULL") ) {
+                respuesta = getString(R.string.not_found);
+                textViewRespuesta.setText( respuesta );
+                return;
+            }
+
+            Gson gson = new Gson();
+
+            SoundResourceDTO sound = null;
+
+            //FIXME use an interface + class implementation
+            if ( API.equals("freesound")) {
+                sound = gson.fromJson(respuesta, FreesoundResourceDTO.class);
+                tmpSoundFilename = sound.getName();
+            }
+            else if ( API.equals("custom")) {
+                sound = gson.fromJson(respuesta, SoundResourceDTO.class);
+                tmpSoundFilename = sound.getFilename();
+            }
+            else { //not yet implemented (redpanal, etc)
+                throw new RuntimeException("Not yet implemented");
+            }
+
+            String jsonSound = ""
+                    //+ sound.getId() + "\n"
+                    + getString(R.string.desc_name)+": " + sound.getName() + "\n\n"
+                    //+ getString(R.string.filename)+ sound.getId() + ".wav\n\n"
+                    + getString(R.string.description)+": "+sound.getDescription() + "\n\n"
+                    + getString(R.string.license)+": "+sound.getLicense() + "\n";
 
             textViewRespuesta.setText(jsonSound);
+            editTextID.setText( String.valueOf(sound.getId()) );
             currentSound = sound;
         }
 
@@ -347,6 +611,8 @@ public class APICallActivity extends AppCompatActivity {
                 //TODO: chequear que exista ese path, etc
                 output = new FileOutputStream( Environment.getExternalStoragePublicDirectory(
                         Environment.DIRECTORY_MUSIC)+"/"+filename );
+                Log.d(LOGTAG, "Destination path: "+Environment.getExternalStoragePublicDirectory(
+                        Environment.DIRECTORY_MUSIC)+"/"+filename);
 
                 byte data[] = new byte[4096];
                 long total = 0;
@@ -407,10 +673,10 @@ public class APICallActivity extends AppCompatActivity {
             mWakeLock.release();
             mProgressDialog.dismiss();
             if (result != null)
-                Toast.makeText(context,"Download error: "+result, Toast.LENGTH_LONG).show();
+                Toast.makeText(context, getString(R.string.download_error)+": "+result, Toast.LENGTH_LONG).show();
             else
-                Toast.makeText(context,"File downloaded", Toast.LENGTH_SHORT).show();
-            //TODO: internacionalizar el texto!
+                Toast.makeText(context,getString(R.string.file_downloaded_to)+" "+Environment.getExternalStoragePublicDirectory(
+                        Environment.DIRECTORY_MUSIC)+"/"+filename, Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -430,31 +696,22 @@ public class APICallActivity extends AppCompatActivity {
                 configurarApp();
                 return true;
             case R.id.action_search:
-                //searchView(); //this activity!
+                //showSoundLocation(); FIXME temporal
+                startActivity(new Intent(this, ShowSamplesOfTheSongActivity.class));
+
                 return true;
             //case R.id.action_listar:
                 //listarContactos();
-            /* Login out only from MainActivity?
             case R.id.sign_out_menu:
-                startActivity(new Intent(this, MainActivity.class));
-
-                mFirebaseAuth.signOut();
-                Auth.GoogleSignInApi.signOut(mGoogleApiClient);
-                mUsername = ANONYMOUS;
-                startActivity(new Intent(this, SignInActivity.class));
-                return true;*/
+                Intent intentMain = new Intent(this, MainActivity.class);
+                intentMain.putExtra("action", "logout");
+                startActivity(intentMain);
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    /*
-    public void searchView() {
-        Intent intentPreferences = new Intent(this, .class);
-        startActivity(intentPreferences);
-    }*/
-
-    public void configurarApp() {
+    private void configurarApp() {
         //Intent intentPreferences = new Intent(this, AppCompatPreferenceActivity.class);
         Intent intentPreferences = new Intent(this, APISettingsActivity.class); //TODO: check, method deprecated
 

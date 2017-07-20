@@ -60,5 +60,13 @@
     <string name="spectral_centroid">SpectralCentroid</string>
     <string name="bpm">BPM</string>
     <string name="duration">Duration</string>
+    <string name="download_error">Download error</string>
+    <string name="file_downloaded_to">File downloaded to</string>
+    <string name="desc_name">Name</string>
+    <string name="license">License</string>
+    <string name="description">Description</string>
+    <string name="filename">Filename</string>
+    <string name="added_to_db">Added to the Remote Database</string>
+    <string name="server_db_path">server/songs/</string>
 
 </resources>

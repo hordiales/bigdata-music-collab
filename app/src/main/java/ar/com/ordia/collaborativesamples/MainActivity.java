@@ -92,6 +92,16 @@ public class MainActivity extends AppCompatActivity
                 .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
                 .addApi(Auth.GOOGLE_SIGN_IN_API)
                 .build();
+
+        Intent intent = getIntent();
+        String action = intent.getStringExtra("action");
+        /* Disabled because it's buggy
+        if( action!=null ) {
+            if( action.equals("logout") ) {
+                signOut();
+            }
+        }
+        */
     }
 
     @Override
@@ -114,14 +124,18 @@ public class MainActivity extends AppCompatActivity
             //case R.id.action_listar:
             //listarContactos();
             case R.id.sign_out_menu:
-                mFirebaseAuth.signOut();
-                Auth.GoogleSignInApi.signOut(mGoogleApiClient);
-                mUsername = ANONYMOUS;
-                startActivity(new Intent(this, SignInActivity.class));
+                signOut();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    public void signOut() {
+        mFirebaseAuth.signOut();
+        Auth.GoogleSignInApi.signOut(mGoogleApiClient);
+        mUsername = ANONYMOUS;
+        startActivity(new Intent(this, SignInActivity.class));
     }
 
     public void searchView() {
@@ -129,7 +143,6 @@ public class MainActivity extends AppCompatActivity
         startActivity(intentPreferences);
     }
     public void configurarApp() {
-        //Intent intentPreferences = new Intent(this, AppCompatPreferenceActivity.class);
         Intent intentPreferences = new Intent(this, APISettingsActivity.class); //TODO: check, method deprecated
 
         startActivity(intentPreferences);

@@ -10,6 +10,12 @@ Generic sound resource DTO
     (own webservice)
  */
 public class SoundResourceDTO {
+
+    @Override
+    public String toString() {
+        return String.valueOf(getId()) + ": " + name;
+    }
+
     private int id;
 
     public int getId() {

@@ -30,7 +30,6 @@
         android:layout_marginRight="8dp"
         android:layout_marginStart="3dp"
         android:layout_marginTop="16dp"
-        android:text="Sound View"
         android:textStyle="bold"
         app:layout_constraintHorizontal_bias="0.507"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -81,41 +80,26 @@
         android:layout_width="223dp"
         android:layout_height="31dp"
         android:layout_marginRight="16dp"
-        android:layout_marginTop="13dp"
+        android:layout_marginTop="8dp"
         android:accessibilityLiveRegion="polite"
         android:focusableInTouchMode="true"
         android:max="15"
+        android:progress="8"
         android:visibility="visible"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/seekBarTempo"
         tools:focusable="true" />
 
-    <SeekBar
-        android:id="@+id/seekBarTempo"
-        style="@style/Widget.AppCompat.SeekBar.Discrete"
-        android:layout_width="222dp"
-        android:layout_height="44dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="24dp"
-        android:max="10"
-        android:progress="3"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewRespuesta"
-        tools:layout_editor_absoluteX="146dp" />
-
     <TextView
         android:id="@+id/textViewBPM"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
+        android:layout_marginLeft="16dp"
         android:layout_marginTop="31dp"
         android:text="@string/bpm"
         android:textSize="12sp"
         android:textStyle="bold"
-        app:layout_constraintHorizontal_bias="0.077"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/seekBarTempo"
         app:layout_constraintTop_toBottomOf="@+id/textViewRespuesta" />
 
     <TextView
@@ -139,6 +123,8 @@
         android:layout_height="37dp"
         android:layout_marginRight="16dp"
         android:layout_marginTop="14dp"
+        android:max="3000"
+        android:progress="800"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/seekBarDuration" />
 
@@ -163,6 +149,8 @@
         android:layout_height="27dp"
         android:layout_marginRight="16dp"
         android:layout_marginTop="26dp"
+        android:max="10"
+        android:progress="8"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/seekBarSpectralCentroid" />
 
@@ -233,5 +221,19 @@
     <Space
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+
+    <SeekBar
+        android:id="@+id/seekBarTempo"
+        android:layout_width="222dp"
+        android:layout_height="38dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="31dp"
+        android:max="200"
+        android:progress="120"
+        app:layout_constraintHorizontal_bias="0.927"
+        app:layout_constraintLeft_toRightOf="@+id/textViewBPM"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewRespuesta" />
 
 </android.support.constraint.ConstraintLayout>

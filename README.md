@@ -9,7 +9,9 @@ BigData Music Collaboration App for Mobile Devices
 
 Supports Freeound.org API and custom werbservice.
 
+# Permission
 
+        Manual activate 'WRITE_EXTERNAL_STORAGE' android permission
 
 ### Acknowledgments
 Icon by Oksana Latysheva (vía Noun Project)
