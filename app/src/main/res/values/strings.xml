@@ -68,5 +68,8 @@
     <string name="filename">Filename</string>
     <string name="added_to_db">Added to the Remote Database</string>
     <string name="server_db_path">server/songs/</string>
+    <string name="action_search" >Search</string>
+    <string name="action_location_map">Map location</string>
+    <string name="action_listar">Song samples</string>
 
 </resources>

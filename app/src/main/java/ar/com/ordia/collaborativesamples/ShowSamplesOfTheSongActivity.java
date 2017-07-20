@@ -1,5 +1,6 @@
 package ar.com.ordia.collaborativesamples;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -7,6 +8,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -43,11 +45,18 @@ public class ShowSamplesOfTheSongActivity extends AppCompatActivity {
         final List<SoundResourceDTO> samplesList;
         samplesList = new ArrayList<SoundResourceDTO>();
 
-        final ArrayAdapter arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, samplesList);
+        arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, samplesList);
         listViewSamples.setAdapter(arrayAdapter);
-        //arrayAdapter.notifyDataSetChanged();
 
-        samplesRef.child("canción1")
+        listViewSamples.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                verSample(position);
+            }
+        });
+
+        String currentSong = "canción1";
+        samplesRef.child(currentSong)
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -64,32 +73,31 @@ public class ShowSamplesOfTheSongActivity extends AppCompatActivity {
                     }
                 });
 
-        /*
-        arrayAdapter = new ArrayAdapter<SoundResourceDTO>(this,
-                android.R.layout.simple_list_item_1,
-                android.R.id.text1,
-                samples);
-
-        listViewSamples.setAdapter(arrayAdapter);
-
-        listViewSamples.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                verSample(position);
-
-            }
-        });*/
     }
 
     private void verSample(int position) {
+        Log.d(LOGTAG, "ListView item position: "+position);
         SoundResourceDTO sample = arrayAdapter.getItem(position);
-        //Toast.makeText(this, contacto.toString(), Toast.LENGTH_SHORT).show();
 
-        //TODO: implementar! -> y cuando muestra que muestre todos los descriptores del sample!
-        /*
-        Intent intentIrAFormulario = new Intent(this, FormContactoActivity.class);
-        intentIrAFormulario.putExtra( "idContacto", contacto.getId() );
-        startActivity(intentIrAFormulario);
-        */
+        try {
+            //Toast.makeText(this, sample.toString(), Toast.LENGTH_SHORT).show();
+
+            Intent intentIrAFormulario = new Intent(this, ShowSampleDescriptorsActivity.class);
+            intentIrAFormulario.putExtra("idSample", sample.getId());
+
+            ArrayList<String> descList = new ArrayList<String>();
+            descList.add( sample.getName() );
+            descList.add( sample.getUsername() );
+            descList.add( sample.getDuration() );
+            descList.add( sample.getLicense() );
+            //descList.add( sample.getGeotag() );
+
+            intentIrAFormulario.putStringArrayListExtra("descriptors", descList);
+
+            startActivity(intentIrAFormulario);
+        }
+        catch(NullPointerException e) {
+            Log.e(LOGTAG, "Nullpointer exception trying to get sample item");
+        }
     }
 }

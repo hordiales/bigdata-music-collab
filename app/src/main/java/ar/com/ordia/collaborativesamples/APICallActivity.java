@@ -695,17 +695,17 @@ public class APICallActivity extends AppCompatActivity {
             case R.id.action_config:
                 configurarApp();
                 return true;
-            case R.id.action_search:
-                //showSoundLocation(); FIXME temporal
+            case R.id.action_listar:
                 startActivity(new Intent(this, ShowSamplesOfTheSongActivity.class));
-
                 return true;
-            //case R.id.action_listar:
-                //listarContactos();
+            case R.id.action_maps:
+                showSoundLocation();
+                return true;
             case R.id.sign_out_menu:
                 Intent intentMain = new Intent(this, MainActivity.class);
                 intentMain.putExtra("action", "logout");
                 startActivity(intentMain);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

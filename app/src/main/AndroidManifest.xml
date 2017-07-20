@@ -63,7 +63,7 @@
 
         <activity
             android:name=".MapsActivity"
-            android:label="MapsActivity"></activity>
+            android:label="MapsActivity" />
         <activity
             android:name=".APISettingsActivity"
             android:configChanges="locale" />
@@ -80,7 +80,8 @@
         <activity
             android:name=".SignInActivity"
             android:label="@string/title_activity_sign_in" />
-        <activity android:name=".ShowSamplesOfTheSongActivity"></activity>
+        <activity android:name=".ShowSamplesOfTheSongActivity" />
+        <activity android:name=".ShowSampleDescriptorsActivity"></activity>
     </application>
 
 </manifest>

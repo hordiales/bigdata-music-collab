@@ -7,18 +7,22 @@
         android:enabled="true"
         android:icon="@android:drawable/ic_menu_edit"
         android:title="@string/action_config"
-        app:showAsAction="always" />
+        app:showAsAction="never" />
     <item
-        android:id="@+id/action_search"
+        android:id="@+id/action_listar"
         android:enabled="true"
         android:icon="@android:drawable/ic_search_category_default"
-        android:title="Borrar"
-        app:showAsAction="always|withText" />
+        android:title="@string/action_listar"
+        app:showAsAction="never|withText" />
+    <item
+        android:id="@+id/action_maps"
+        android:enabled="true"
+        android:title="@string/action_location_map"
+        app:showAsAction="never|withText" />
     <item
         android:id="@+id/sign_out_menu"
         android:enabled="true"
         android:icon="@drawable/common_google_signin_btn_icon_disabled"
         android:title="@string/sign_out"
-        android:visible="true"
-        app:showAsAction="always" />
+        android:visible="true" />
 </menu>

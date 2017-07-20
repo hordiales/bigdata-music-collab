@@ -118,11 +118,11 @@ public class MainActivity extends AppCompatActivity
             case R.id.action_config:
                 configurarApp();
                 return true;
-            case R.id.action_search:
-                searchView();
+            /*
+            case R.id.action_listar:
+                //TODO: implement (use fragments?)
                 return true;
-            //case R.id.action_listar:
-            //listarContactos();
+                */
             case R.id.sign_out_menu:
                 signOut();
                 return true;

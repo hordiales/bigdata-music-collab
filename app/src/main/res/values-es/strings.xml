@@ -50,6 +50,9 @@
     <string name="license">Licencia</string>
     <string name="filename">Archivo:</string>
     <string name="added_to_db">Agregada a la base de datos remota</string>
+    <string name="action_search">Buscar</string>
+    <string name="action_listar">Ver Canción</string>
+    <string name="action_location_map">Mapa</string>
 
 
 </resources>
