@@ -53,6 +53,8 @@
     <string name="action_search">Buscar</string>
     <string name="action_listar">Ver Canción</string>
     <string name="action_location_map">Mapa</string>
+    <string name="new_sample">Nuevo sample agregado</string>
+    <string name="new_sample_body">Escuchalo</string>
 
 
 </resources>

@@ -9,6 +9,7 @@ import android.os.AsyncTask;
 import android.os.Environment;
 import android.os.PowerManager;
 import android.preference.PreferenceManager;
+import android.provider.SyncStateContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
@@ -27,6 +28,7 @@ import android.widget.Toast;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
@@ -132,12 +134,8 @@ public class APICallActivity extends AppCompatActivity {
 
         configurarAPIDownload();
 
-        // New child entries
-        //mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
-        /*
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference ref = database.getReference("server/saving-data/fireblog");
-        */
+        //Topic suscription (notifications)
+        FirebaseMessaging.getInstance().subscribeToTopic("news");
     }
 
     // Firebase instance variables
@@ -160,6 +158,9 @@ public class APICallActivity extends AppCompatActivity {
         songsRef.child(String.valueOf(currentSound.getId())).setValue(currentSound);
 
         textViewRespuesta.setText(getString(R.string.added_to_db));
+
+        String topic = "/topics/news";
+        sendNotification(topic);
     }
 
     private void showSoundLocation() {
@@ -201,7 +202,7 @@ public class APICallActivity extends AppCompatActivity {
             }
 
             URL_SOUND_RESOURCE = appPreferences.getString("pref_apiCustomUrl", null)+"/search";
-            //URL_SOUND_RESOURCE = "http://5.0.0.100:5000"+"/search";
+            URL_SOUND_RESOURCE = "http://5.0.0.100:5000"+"/search";
 
             URL_SOUND_DOWNLOAD_PRE = URL_SOUND_RESOURCE;
             URL_SOUND_DOWNLOAD_POST = "";
@@ -246,7 +247,7 @@ public class APICallActivity extends AppCompatActivity {
         else if( API.equals("custom") ) {
             //API_KEY = null; //lets use same freesound api-key
             URL_SOUND_RESOURCE = appPreferences.getString("pref_apiCustomUrl", null)+"/sounds/";
-            //URL_SOUND_RESOURCE = "http://5.0.0.100:5000"+"/sounds/";
+            URL_SOUND_RESOURCE = "http://5.0.0.100:5000"+"/sounds/"; //FIXME: temporal
             URL_SOUND_DOWNLOAD_PRE = URL_SOUND_RESOURCE;
             URL_SOUND_DOWNLOAD_POST = "/audio";
         }
@@ -282,7 +283,7 @@ public class APICallActivity extends AppCompatActivity {
         else if( API.equals("custom") ) {
             //API_KEY = null; //lets use same freesound api-key
             URL_SOUND_RESOURCE = appPreferences.getString("pref_apiCustomUrl", null)+"/sounds/";
-            //URL_SOUND_RESOURCE = "http://5.0.0.100:5000"+"/sounds/";
+            URL_SOUND_RESOURCE = "http://5.0.0.100:5000"+"/sounds/"; //FIXME: TEMPORAL
             URL_SOUND_DOWNLOAD_PRE = URL_SOUND_RESOURCE;
             URL_SOUND_DOWNLOAD_POST = "";
         }
@@ -448,15 +449,16 @@ public class APICallActivity extends AppCompatActivity {
                 throw new RuntimeException("Not yet implemented");
             }
 
-            /*
             String jsonSound = ""
-                //+ sound.getId() + "\n"
-                + getString(R.string.desc_name)+": " + sound.getName() + "\n\n"
-                //+ getString(R.string.filename)+ sound.getId() + ".wav\n\n"
-                + getString(R.string.description)+": "+sound.getDescription() + "\n\n"
-                + getString(R.string.license)+": "+sound.getLicense() + "\n";
-            */
-            //textViewRespuesta.setText(jsonSound);
+                    //+ sound.getId() + "\n"
+                    + getString(R.string.desc_name)+": " + sound.getName() + "\n\n"
+                    //+ getString(R.string.filename)+ sound.getId() + ".wav\n\n"
+                    + getString(R.string.description)+": "+sound.getDescription() + "\n\n"
+                    + getString(R.string.license)+": "+sound.getLicense() + "\n";
+
+            textViewRespuesta.setText(jsonSound);
+            editTextID.setText( String.valueOf(sound.getId()) );
+
             currentSound = sound;
 
             startMapActivity();
@@ -678,7 +680,41 @@ public class APICallActivity extends AppCompatActivity {
                 Toast.makeText(context,getString(R.string.file_downloaded_to)+" "+Environment.getExternalStoragePublicDirectory(
                         Environment.DIRECTORY_MUSIC)+"/"+filename, Toast.LENGTH_SHORT).show();
         }
+    }
 
+    public static final MediaType JSON
+            = MediaType.parse("application/json; charset=utf-8");
+    private void sendNotification(final String reg_token) {
+        AsyncTask<Void, Void, Void> execute = new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                try {
+                    OkHttpClient client = new OkHttpClient();
+                    JsonObject json = new JsonObject();
+                    JsonObject dataJson = new JsonObject();
+
+                    dataJson.addProperty("title", getString(R.string.new_sample));
+                    dataJson.addProperty("body", getString(R.string.new_sample_body));
+
+                    json.add("notification", dataJson);
+                    json.addProperty("to", reg_token);
+
+                    Log.d(LOGTAG, "Sending notification NEW SAMPLE ADDED");
+                    RequestBody body = RequestBody.create(JSON, json.toString());
+                    Request request = new Request.Builder()
+                            .header("Authorization", "key=" + getString(R.string.legacy_server_key))
+                            .url("https://fcm.googleapis.com/fcm/send")
+                            .post(body)
+                            .build();
+                    Response response = client.newCall(request).execute();
+                    String finalResponse = response.body().string();
+                    Log.d(LOGTAG, "Response: "+finalResponse);
+                } catch (Exception e) {
+                    Log.e(LOGTAG,e+"");
+                }
+                return null;
+            }
+        }.execute();
     }
 
     @Override

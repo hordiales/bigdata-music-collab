@@ -71,5 +71,8 @@
     <string name="action_search" >Search</string>
     <string name="action_location_map">Map location</string>
     <string name="action_listar">Song samples</string>
+    <string name="legacy_server_key">AIzaSyC-dChkotKlGu3fo-rGDUep7Tj-vOo0Wv8</string>
+    <string name="new_sample">New sample</string>
+    <string name="new_sample_body">Listen</string>
 
 </resources>
