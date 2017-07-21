@@ -202,7 +202,7 @@ public class APICallActivity extends AppCompatActivity {
             }
 
             URL_SOUND_RESOURCE = appPreferences.getString("pref_apiCustomUrl", null)+"/search";
-            URL_SOUND_RESOURCE = "http://5.0.0.100:5000"+"/search";
+            //URL_SOUND_RESOURCE = "http://5.0.0.100:5000"+"/search";
 
             URL_SOUND_DOWNLOAD_PRE = URL_SOUND_RESOURCE;
             URL_SOUND_DOWNLOAD_POST = "";
@@ -247,7 +247,7 @@ public class APICallActivity extends AppCompatActivity {
         else if( API.equals("custom") ) {
             //API_KEY = null; //lets use same freesound api-key
             URL_SOUND_RESOURCE = appPreferences.getString("pref_apiCustomUrl", null)+"/sounds/";
-            URL_SOUND_RESOURCE = "http://5.0.0.100:5000"+"/sounds/"; //FIXME: temporal
+            //URL_SOUND_RESOURCE = "http://5.0.0.100:5000"+"/sounds/"; //FIXME: temporal
             URL_SOUND_DOWNLOAD_PRE = URL_SOUND_RESOURCE;
             URL_SOUND_DOWNLOAD_POST = "/audio";
         }
@@ -283,7 +283,7 @@ public class APICallActivity extends AppCompatActivity {
         else if( API.equals("custom") ) {
             //API_KEY = null; //lets use same freesound api-key
             URL_SOUND_RESOURCE = appPreferences.getString("pref_apiCustomUrl", null)+"/sounds/";
-            URL_SOUND_RESOURCE = "http://5.0.0.100:5000"+"/sounds/"; //FIXME: TEMPORAL
+            //URL_SOUND_RESOURCE = "http://5.0.0.100:5000"+"/sounds/"; //FIXME: TEMPORAL
             URL_SOUND_DOWNLOAD_PRE = URL_SOUND_RESOURCE;
             URL_SOUND_DOWNLOAD_POST = "";
         }

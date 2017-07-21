@@ -3,6 +3,12 @@ BigData Music Collaboration App for Mobile Devices
 
     Uses MIR descriptors to search sounds around the web.
 
+### Firebase distributed online DB
+![](doc/firebaseDB.png)
+
+### Android client
+![](doc/samples-of-the-song.png)
+
 ## Android version
 
         minSdkVersion 16
