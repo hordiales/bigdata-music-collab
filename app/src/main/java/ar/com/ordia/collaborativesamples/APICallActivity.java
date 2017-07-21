@@ -159,6 +159,7 @@ public class APICallActivity extends AppCompatActivity {
 
         textViewRespuesta.setText(getString(R.string.added_to_db));
 
+        //TODO: check configuration (if notification events is set on or not)
         String topic = "/topics/news";
         sendNotification(topic);
     }
@@ -201,8 +202,10 @@ public class APICallActivity extends AppCompatActivity {
                 API_KEY = getString(R.string.freesound_api_key); //default by config
             }
 
-            URL_SOUND_RESOURCE = appPreferences.getString("pref_apiCustomUrl", null)+"/search";
-            //URL_SOUND_RESOURCE = "http://5.0.0.100:5000"+"/search";
+            URL_SOUND_RESOURCE = appPreferences.getString("pref_api_custom_url", null);
+            if (URL_SOUND_RESOURCE!=null) {
+                URL_SOUND_RESOURCE += "/search";
+            }
 
             URL_SOUND_DOWNLOAD_PRE = URL_SOUND_RESOURCE;
             URL_SOUND_DOWNLOAD_POST = "";
@@ -246,8 +249,7 @@ public class APICallActivity extends AppCompatActivity {
         }
         else if( API.equals("custom") ) {
             //API_KEY = null; //lets use same freesound api-key
-            URL_SOUND_RESOURCE = appPreferences.getString("pref_apiCustomUrl", null)+"/sounds/";
-            //URL_SOUND_RESOURCE = "http://5.0.0.100:5000"+"/sounds/"; //FIXME: temporal
+            URL_SOUND_RESOURCE = appPreferences.getString("pref_api_custom_url", null)+"/sounds/";
             URL_SOUND_DOWNLOAD_PRE = URL_SOUND_RESOURCE;
             URL_SOUND_DOWNLOAD_POST = "/audio";
         }
@@ -282,8 +284,7 @@ public class APICallActivity extends AppCompatActivity {
         }
         else if( API.equals("custom") ) {
             //API_KEY = null; //lets use same freesound api-key
-            URL_SOUND_RESOURCE = appPreferences.getString("pref_apiCustomUrl", null)+"/sounds/";
-            //URL_SOUND_RESOURCE = "http://5.0.0.100:5000"+"/sounds/"; //FIXME: TEMPORAL
+            URL_SOUND_RESOURCE = appPreferences.getString("pref_api_custom_url", null)+"/sounds/";
             URL_SOUND_DOWNLOAD_PRE = URL_SOUND_RESOURCE;
             URL_SOUND_DOWNLOAD_POST = "";
         }
