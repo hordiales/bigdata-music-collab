@@ -7,6 +7,9 @@ BigData Music Collaboration App for Mobile Devices
 ![](doc/firebaseDB.png)
 
 ### Android client
+
+![](doc/mir_sliders.png)
+![](doc/available_apis.png)
 ![](doc/samples-of-the-song.png)
 
 ## Android version
